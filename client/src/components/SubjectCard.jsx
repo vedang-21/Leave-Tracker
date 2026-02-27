@@ -17,7 +17,7 @@ export default function SubjectCard({
     ((totalLectures - leavesTaken) / totalLectures) * 100;
 
   const roundedAttendance = Math.round(attendance);
-  const leavesRemaining = maxLeaves - leavesTaken;
+  const leavesRemaining = Math.max(maxLeaves - leavesTaken, 0);
 
   let statusColor = "text-green-600";
   let progressColor = "bg-green-500";

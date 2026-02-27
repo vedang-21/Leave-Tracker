@@ -7,29 +7,30 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
   const [reason, setReason] = useState("");
 
   const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      await axios.post(
-        "http://localhost:7777/api/leaves",
-        {
-          subjectName: subjects[selectedIndex].name,
-          date,
-          reason,
-        },
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+    await axios.post(
+      "http://localhost:7777/api/leaves",
+      {
+        subjectName: subjects[selectedIndex].name,
+        date,
+        reason,
+      },
+      {
+        headers: { Authorization: token },
+      }
+    );
 
-      onSubmit(selectedIndex);
-    } catch (error) {
-      console.error(error);
+    onSubmit(selectedIndex);
+  } catch (error) {
+    if (error.response) {
+      alert(error.response.data.message);
+    } else {
+      alert("Server error");
     }
-  };
-
+  }
+};
   return (
     <div className="fixed inset-0 bg-black/40 dark:bg-black/60 flex items-center justify-center z-50">
       <div className="
