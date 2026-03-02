@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema(
     rollNo: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+
+    // 🔐 Password Reset Fields
+    resetPasswordToken: { type: String },
+    resetPasswordExpire: { type: Date },
   },
   { timestamps: true }
 );
