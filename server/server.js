@@ -14,6 +14,12 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+/* ADD THIS HERE */
+app.get("/", (req, res) => {
+  res.send("Leave Tracker API is running 🚀");
+});
+
+/* API ROUTES */
 app.use("/api/auth", authRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/leaves", leaveRoutes);
