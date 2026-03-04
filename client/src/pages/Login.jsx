@@ -2,6 +2,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_BASE = "https://leave-tracker-z363.onrender.com";
+
 export default function Login() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -19,7 +21,7 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:7777/api/auth/login",
+        `${API_BASE}/api/auth/login`,
         { email, password }
       );
 

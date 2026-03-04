@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
+const API_BASE = "https://leave-tracker-z363.onrender.com";
+
 export default function ResetPassword() {
   const { token } = useParams();
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ export default function ResetPassword() {
 
     try {
       const res = await axios.post(
-        `http://localhost:7777/api/auth/reset-password/${token}`,
+        `${API_BASE}/api/auth/reset-password/${token}`,
         { password }
       );
 

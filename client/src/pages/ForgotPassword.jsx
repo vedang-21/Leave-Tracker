@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+const API_BASE = "https://leave-tracker-z363.onrender.com";
+
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -13,7 +15,7 @@ export default function ForgotPassword() {
 
     try {
       const res = await axios.post(
-        "http://localhost:7777/api/auth/forgot-password",
+        `${API_BASE}/api/auth/forgot-password`,
         { email }
       );
 

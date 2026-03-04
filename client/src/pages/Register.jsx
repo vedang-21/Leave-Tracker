@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const API_BASE = "https://leave-tracker-z363.onrender.com";
+
 export default function Register() {
   const navigate = useNavigate();
 
@@ -24,7 +26,7 @@ export default function Register() {
 
     try {
       await axios.post(
-        "http://localhost:7777/api/auth/register",
+        `${API_BASE}/api/auth/register`,
         form
       );
 
