@@ -4,9 +4,19 @@ import axios from "axios";
 export default function AddSubjectModal({ onClose, onAdded }) {
   const [name, setName] = useState("");
   const [lectureType, setLectureType] = useState("45");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const isValid = name.trim().length >= 2;
 
   const handleAdd = async () => {
+    if (!isValid) {
+      setError("Subject name must be at least 2 characters.");
+      return;
+    }
+
     try {
+      setSubmitting(true);
+      setError("");
       const token = localStorage.getItem("token");
 
       const totalLectures = Number(lectureType);
@@ -28,7 +38,11 @@ export default function AddSubjectModal({ onClose, onAdded }) {
 
       onAdded();
     } catch (error) {
-      console.error(error);
+      setError(
+        error?.response?.data?.message || "Failed to add subject"
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -54,6 +68,7 @@ export default function AddSubjectModal({ onClose, onAdded }) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder="e.g. Database Systems"
           className="
             w-full p-3 mb-4
             border border-slate-300 dark:border-slate-600
@@ -86,6 +101,12 @@ export default function AddSubjectModal({ onClose, onAdded }) {
           <option value="15">15 Hours</option>
         </select>
 
+        {error && (
+          <p className="text-sm text-red-600 dark:text-red-400 mb-4">
+            {error}
+          </p>
+        )}
+
         {/* Buttons */}
         <div className="flex justify-end gap-3">
           <button
@@ -103,14 +124,15 @@ export default function AddSubjectModal({ onClose, onAdded }) {
 
           <button
             onClick={handleAdd}
+            disabled={!isValid || submitting}
             className="
               px-4 py-2 rounded-lg
               bg-indigo-600 text-white
-              hover:bg-indigo-700
+              hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed
               transition
             "
           >
-            Add
+            {submitting ? "Adding..." : "Add"}
           </button>
         </div>
       </div>

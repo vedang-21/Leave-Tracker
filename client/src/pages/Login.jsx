@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function Login() {
@@ -7,9 +7,11 @@ export default function Login() {
   const token = localStorage.getItem("token");
 
   // 🔒 Prevent logged-in users from seeing login
-  if (token) {
-    window.location.href = "/dashboard";
-  }
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [token, navigate]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,21 +27,26 @@ export default function Login() {
       localStorage.setItem("userId", res.data.userId);
       localStorage.setItem("name", res.data.name);
 
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
+
     } catch (error) {
       alert("Invalid credentials");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-80">
-        <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-slate-900 dark:to-slate-950">
+      
+      <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl w-80">
+        
+        <h1 className="text-2xl font-bold text-center mb-6 dark:text-white">
+          Login
+        </h1>
 
         <input
           type="email"
           placeholder="Email"
-          className="w-full p-3 mb-4 border rounded-lg"
+          className="w-full p-3 mb-4 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-white"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -47,10 +54,20 @@ export default function Login() {
         <input
           type="password"
           placeholder="Password"
-          className="w-full p-3 mb-6 border rounded-lg"
+          className="w-full p-3 mb-2 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 dark:text-white"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        {/* 🔐 Forgot Password Link */}
+        <div className="text-right mb-6">
+          <Link
+            to="/forgot-password"
+            className="text-indigo-600 hover:underline text-sm dark:text-indigo-400"
+          >
+            Forgot Password?
+          </Link>
+        </div>
 
         <button
           onClick={handleLogin}
@@ -58,15 +75,17 @@ export default function Login() {
         >
           Login
         </button>
-        <p className="text-sm mt-4 text-center">
-  Don't have an account?{" "}
-  <span
-    className="text-indigo-600 cursor-pointer"
-    onClick={() => navigate("/register")}
-  >
-    Register
-  </span>
-</p>
+
+        <p className="text-sm mt-4 text-center dark:text-slate-300">
+          Don't have an account?{" "}
+          <span
+            className="text-indigo-600 cursor-pointer dark:text-indigo-400"
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </span>
+        </p>
+
       </div>
     </div>
   );

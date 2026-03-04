@@ -5,32 +5,47 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [date, setDate] = useState("");
   const [reason, setReason] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const hasSubjects = subjects.length > 0;
+  const isValid = hasSubjects && date && reason.trim().length >= 3;
 
   const handleSubmit = async () => {
-  try {
-    const token = localStorage.getItem("token");
-
-    await axios.post(
-      "http://localhost:7777/api/leaves",
-      {
-        subjectName: subjects[selectedIndex].name,
-        date,
-        reason,
-      },
-      {
-        headers: { Authorization: token },
-      }
-    );
-
-    onSubmit(selectedIndex);
-  } catch (error) {
-    if (error.response) {
-      alert(error.response.data.message);
-    } else {
-      alert("Server error");
+    if (!isValid) {
+      setError("Select a subject, valid date, and reason (min 3 chars).");
+      return;
     }
-  }
-};
+
+    try {
+      setSubmitting(true);
+      setError("");
+      const token = localStorage.getItem("token");
+
+      await axios.post(
+        "http://localhost:7777/api/leaves",
+        {
+          subjectName: subjects[selectedIndex].name,
+          date,
+          reason: reason.trim(),
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
+
+      onSubmit(selectedIndex);
+    } catch (submitError) {
+      if (submitError.response) {
+        setError(submitError.response.data.message);
+      } else {
+        setError("Server error");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black/40 dark:bg-black/60 flex items-center justify-center z-50">
       <div className="
@@ -43,6 +58,12 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
         <h2 className="text-2xl font-semibold mb-6">
           Mark Leave
         </h2>
+
+        {!hasSubjects && (
+          <p className="mb-4 rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 px-3 py-2 text-sm">
+            Add a subject first before marking leave.
+          </p>
+        )}
 
         {/* Subject Select */}
         <label className="block text-sm mb-2 text-slate-600 dark:text-slate-400">
@@ -60,6 +81,7 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
           "
           value={selectedIndex}
           onChange={(e) => setSelectedIndex(Number(e.target.value))}
+          disabled={!hasSubjects}
         >
           {subjects.map((subject, index) => (
             <option key={index} value={index}>
@@ -108,6 +130,12 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
           "
         ></textarea>
 
+        {error && (
+          <p className="text-sm text-red-600 dark:text-red-400 mb-4">
+            {error}
+          </p>
+        )}
+
         {/* Buttons */}
         <div className="flex justify-end gap-3">
           <button
@@ -125,14 +153,15 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
 
           <button
             onClick={handleSubmit}
+            disabled={!isValid || submitting}
             className="
               px-4 py-2 rounded-lg
               bg-indigo-600 text-white
-              hover:bg-indigo-700
+              hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed
               transition
             "
           >
-            Submit
+            {submitting ? "Submitting..." : "Submit"}
           </button>
         </div>
       </div>
