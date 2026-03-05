@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-
+const API_BASE = "https://leave-tracker-z363.onrender.com";
 export default function LeaveModal({ subjects, onClose, onSubmit }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [date, setDate] = useState("");
@@ -23,7 +23,7 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "http://localhost:7777/api/leaves",
+        `${API_BASE}/api/subjects`,
         {
           subjectName: subjects[selectedIndex].name,
           date,
