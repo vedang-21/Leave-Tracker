@@ -22,14 +22,14 @@ export default function AddSubjectModal({ onClose, onAdded }) {
       const token = localStorage.getItem("token");
 
     const totalLectures = Number(lectureType);
-    const maxLeaves = totalLectures * 0.2;
+const maxLeaves = totalLectures * 0.2;
 
-    await axios.post(
+await axios.post(
   `${API_BASE}/api/subjects`,
   {
-    name: name,
-    totalLectures: totalLecturesNum,
-    maxLeaves: maxLeavesNum
+    name,
+    totalLectures,
+    maxLeaves
   },
   {
     headers: {
@@ -37,7 +37,6 @@ export default function AddSubjectModal({ onClose, onAdded }) {
     }
   }
 );
-
       onAdded();
     } catch (error) {
       setError(
