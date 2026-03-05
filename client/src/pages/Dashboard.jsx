@@ -40,6 +40,7 @@ export default function Dashboard() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [leaveSearch, setLeaveSearch] = useState("");
   const [leaveSort, setLeaveSort] = useState("newest");
+  const [showMoreSubjects, setShowMoreSubjects] = useState(false);
 
   useEffect(() => {
     if (darkMode) {
@@ -51,7 +52,14 @@ export default function Dashboard() {
     }
   }, [darkMode]);
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(
+  useSensor(PointerSensor, {
+    activationConstraint: {
+      delay: 150,
+      tolerance: 5
+    }
+  })
+);
 
   useEffect(() => {
     if (!token) window.location.href = "/";
@@ -288,18 +296,29 @@ export default function Dashboard() {
               strategy={rectSortingStrategy}
             >
               <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 mb-8">
-                {filteredSubjects.map((subject) => (
-                  <SortableItem key={subject._id} id={subject._id}>
-                    {(dragProps) => (
-                      <SubjectCard
-                        subject={subject}
-                        onDelete={handleDeleteSubject}
-                        dragHandleProps={dragProps}
-                      />
-                    )}
-                  </SortableItem>
-                ))}
-              </div>
+  {(showMoreSubjects ? filteredSubjects : filteredSubjects.slice(0, 3)).map((subject) => (
+    <SortableItem key={subject._id} id={subject._id}>
+      {(dragProps) => (
+        <SubjectCard
+          subject={subject}
+          onDelete={handleDeleteSubject}
+          dragHandleProps={dragProps}
+        />
+      )}
+    </SortableItem>
+  ))}
+</div>
+
+{filteredSubjects.length > 3 && (
+  <div className="flex justify-center mb-10">
+    <button
+      onClick={() => setShowMoreSubjects(!showMoreSubjects)}
+      className="px-5 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition"
+    >
+      {showMoreSubjects ? "Show Less Subjects" : "See More Subjects"}
+    </button>
+  </div>
+)}
             </SortableContext>
           </DndContext>
         )}
