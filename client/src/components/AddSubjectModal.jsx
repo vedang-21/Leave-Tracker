@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+const API_BASE = "https://leave-tracker-z363.onrender.com";
+
 export default function AddSubjectModal({ onClose, onAdded }) {
   const [name, setName] = useState("");
   const [lectureType, setLectureType] = useState("45");
@@ -23,18 +25,18 @@ export default function AddSubjectModal({ onClose, onAdded }) {
       const maxLeaves = totalLectures * 0.2;
 
       await axios.post(
-        "http://localhost:7777/api/subjects",
-        {
-          name,
-          totalLectures,
-          maxLeaves,
-        },
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+  `${API_BASE}/api/subjects`,
+  {
+    name,
+    totalLectures,
+    maxLeaves,
+  },
+  {
+    headers: {
+      Authorization: token,
+    },
+  }
+);
 
       onAdded();
     } catch (error) {
