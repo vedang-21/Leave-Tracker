@@ -21,16 +21,16 @@ export default function AddSubjectModal({ onClose, onAdded }) {
       setError("");
       const token = localStorage.getItem("token");
 
-      const totalLectures = Number(lectureType);
-      const maxLeaves = totalLectures * 0.2;
+    const totalLectures = Number(lectureType);
+    const maxLeaves = totalLectures * 0.2;
 
-      await axios.post(
-  `${API_BASE}/api/subjects`,
-  {
+    await axios.post(
+      `${API_BASE}/api/subjects`,
+   {
     name,
     totalLectures,
     maxLeaves,
-  },
+   },
   {
     headers: {
       Authorization: token,
