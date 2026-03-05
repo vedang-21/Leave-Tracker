@@ -1,7 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
+
 const API_BASE = "https://leave-tracker-z363.onrender.com";
+
 export default function LeaveModal({ subjects, onClose, onSubmit }) {
+
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [date, setDate] = useState("");
   const [reason, setReason] = useState("");
@@ -9,38 +12,53 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
   const [submitting, setSubmitting] = useState(false);
 
   const hasSubjects = subjects.length > 0;
-  const isValid = hasSubjects && date && reason.trim().length >= 3;
+
+  const isValid =
+    hasSubjects &&
+    date &&
+    reason.trim().length >= 3;
 
   const handleSubmit = async () => {
+
     if (!isValid) {
       setError("Select a subject, valid date, and reason (min 3 chars).");
       return;
     }
 
     try {
+
       setSubmitting(true);
       setError("");
+
       const token = localStorage.getItem("token");
 
+      const subject = subjects[selectedIndex];
+
       await axios.post(
-        `${API_BASE}/api/subjects`,
+        `${API_BASE}/api/leaves`,
         {
-          subjectName: subjects[selectedIndex].name,
+          subjectId: subject._id,
+          subjectName: subject.name,
           date,
-          reason: reason.trim(),
+          reason
         },
         {
-          headers: { Authorization: token },
+          headers: {
+            Authorization: token
+          }
         }
       );
 
       onSubmit(selectedIndex);
+
     } catch (submitError) {
+
       if (submitError.response) {
         setError(submitError.response.data.message);
       } else {
         setError("Server error");
       }
+
     } finally {
       setSubmitting(false);
     }
@@ -48,6 +66,7 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
 
   return (
     <div className="fixed inset-0 bg-black/40 dark:bg-black/60 flex items-center justify-center z-50">
+
       <div className="
         bg-white dark:bg-slate-800
         text-slate-900 dark:text-slate-200
@@ -55,6 +74,7 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
         shadow-2xl
         transition-colors duration-300
       ">
+
         <h2 className="text-2xl font-semibold mb-6">
           Mark Leave
         </h2>
@@ -83,14 +103,17 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
           onChange={(e) => setSelectedIndex(Number(e.target.value))}
           disabled={!hasSubjects}
         >
+
           {subjects.map((subject, index) => (
-            <option key={index} value={index}>
+            <option key={subject._id} value={index}>
               {subject.name}
             </option>
           ))}
+
         </select>
 
         {/* Date */}
+
         <label className="block text-sm mb-2 text-slate-600 dark:text-slate-400">
           Select Date
         </label>
@@ -110,6 +133,7 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
         />
 
         {/* Reason */}
+
         <label className="block text-sm mb-2 text-slate-600 dark:text-slate-400">
           Reason
         </label>
@@ -137,7 +161,9 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
         )}
 
         {/* Buttons */}
+
         <div className="flex justify-end gap-3">
+
           <button
             onClick={onClose}
             className="
@@ -163,8 +189,11 @@ export default function LeaveModal({ subjects, onClose, onSubmit }) {
           >
             {submitting ? "Submitting..." : "Submit"}
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 }
