@@ -25,16 +25,16 @@ export default function AddSubjectModal({ onClose, onAdded }) {
     const maxLeaves = totalLectures * 0.2;
 
     await axios.post(
-      `${API_BASE}/api/subjects`,
-   {
-    name,
-    totalLectures,
-    maxLeaves,
-   },
+  `${API_BASE}/api/subjects`,
+  {
+    name: name,
+    totalLectures: totalLecturesNum,
+    maxLeaves: maxLeavesNum
+  },
   {
     headers: {
-      Authorization: token,
-    },
+      Authorization: token
+    }
   }
 );
 
