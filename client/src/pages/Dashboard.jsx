@@ -223,11 +223,11 @@ export default function Dashboard() {
             </button>
 
             <button
-              onClick={() => setIsOpen(true)}
-              className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg"
-            >
-              Add Leave
-            </button>
+  onClick={() => setIsOpen(true)}
+  className="hidden md:block bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg"
+>
+  Add Leave
+</button>
 
             <button
               onClick={() => {
